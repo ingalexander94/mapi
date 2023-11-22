@@ -28,13 +28,14 @@ article.authentication section.authentication__wrapper h3 {
 article.authentication section.authentication__wrapper form {
   display: flex;
   flex-direction: column;
-  row-gap: 20px;
+  row-gap: 5px;
   width: 80%;
 }
 
 article.authentication section.authentication__wrapper form p {
   text-align: center;
   font-size: 14px;
+  margin-bottom: 20px;
 }
 
 article.authentication section.authentication__wrapper form button {
@@ -48,6 +49,12 @@ article.authentication section.authentication__wrapper form button {
   font-size: 16px;
   font-weight: bold;
   text-transform: uppercase2;
+}
+
+article.authentication section.authentication__wrapper form button:disabled {
+  pointer-events: none;
+  cursor: not-allowed;
+  opacity: 0.3;
 }
 
 article.authentication section.authentication__wrapper form button:hover {
@@ -64,6 +71,7 @@ article.authentication section.authentication__wrapper form a {
   font-weight: bold;
   text-align: center;
   color: var(--text-color);
+  margin-top: 20px;
 }
 
 article.authentication
@@ -80,6 +88,7 @@ article.authentication
   div.authentication__input
   label {
   font-weight: bold;
+  margin-bottom: 5px;
 }
 
 article.authentication
@@ -104,6 +113,8 @@ article.authentication
   span {
   font-size: 14px;
   color: var(--primary-color);
+  height: 20px;
+  width: 100%;
 }
 
 article.authentication

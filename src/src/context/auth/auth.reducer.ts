@@ -1,6 +1,6 @@
 import { AuthState, UserAuth } from "src/interfaces";
 
-type AuthAction = { type: "setUserAuth"; payload: UserAuth };
+type AuthAction = { type: "setUserAuth"; payload: UserAuth | null };
 
 export const authReducer = (
   state: AuthState,
@@ -10,7 +10,7 @@ export const authReducer = (
     case "setUserAuth":
       return {
         ...state,
-        user: { ...action.payload },
+        user: action.payload ? { ...action.payload } : null,
       };
     default:
       return state;

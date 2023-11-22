@@ -1,10 +1,9 @@
 export interface UserAuth {
-  id: number;
-  name: string;
+  fullname: string;
   email: string;
+  password: string;
 }
 
 export interface AuthState {
   user: UserAuth | null;
-  checking: boolean;
 }

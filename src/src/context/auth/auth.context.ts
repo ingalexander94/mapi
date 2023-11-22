@@ -3,7 +3,7 @@ import { AuthState, UserAuth } from "src/interfaces";
 
 export type AuthContextProps = {
   authState: AuthState;
-  setUserAuth: (user: UserAuth) => void;
+  setUserAuth: (user: UserAuth | null) => void;
 };
 
 export const AuthContext = createContext<AuthContextProps>(
