@@ -6,6 +6,7 @@ import { LoginValidatorForm } from "src/validators";
 import { AuthContext } from "src/context/auth";
 import { UIContext } from "src/context/ui";
 import styles from "../auth.module.css";
+import { SettingsContext } from "src/context/settings";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -13,6 +14,10 @@ const Login = () => {
   const { setUserAuth } = authContext;
   const uiContext = useContext(UIContext);
   const { toggleCheking, uiState } = uiContext;
+  const settingsContext = useContext(SettingsContext);
+  const {
+    settingsState: { translated_text },
+  } = settingsContext;
 
   const formik = useFormik({
     initialValues: LoginValidatorForm.initialState,
@@ -43,12 +48,12 @@ const Login = () => {
                 : ""
             }`}
           >
-            <label htmlFor="email">Correo</label>
+            <label htmlFor="email">{translated_text.email}</label>
             <input
               type="email"
               id="email"
               name="email"
-              placeholder="Escribe tu correo electrónico"
+              placeholder={translated_text.write_email}
               onBlur={formik.handleBlur}
               value={formik.values.email}
               onChange={formik.handleChange}
@@ -70,12 +75,12 @@ const Login = () => {
                 : ""
             }`}
           >
-            <label htmlFor="password">Contraseña</label>
+            <label htmlFor="password">{translated_text.password}</label>
             <input
               type="password"
               id="password"
               name="password"
-              placeholder="Escribe tu contraseña"
+              placeholder={translated_text.write_password}
               onBlur={formik.handleBlur}
               value={formik.values.password}
               onChange={formik.handleChange}
@@ -89,9 +94,11 @@ const Login = () => {
             )}
           </div>
           <button type="submit" disabled={!formik.dirty || !formik.isValid}>
-            Iniciar sesión
+            {translated_text.login}
           </button>
-          <Link to={`/${publicRoutes.RECOVERY}`}>Recuperar contraseña </Link>
+          <Link to={`/${publicRoutes.RECOVERY}`}>
+            {translated_text.recovery_password}
+          </Link>
         </form>
       </section>
     </article>

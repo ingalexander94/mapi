@@ -19,19 +19,6 @@ nav.navbar div.navbar__menu {
   column-gap: 10px;
 }
 
-nav.navbar div.navbar__menu aside {
-  background: var(--primary-color);
-  position: fixed;
-  left: 0;
-  top: 60px;
-  width: 60vw;
-  min-height: 100vh;
-  height: 100%;
-  transform: translateX(-400px);
-  transition: transform ease 0.1s;
-  padding: 20px;
-}
-
 nav.navbar div.navbar__menu input[type="checkbox"] {
   display: none;
 }
@@ -97,10 +84,4 @@ nav.navbar div.navbar__menu input[type="checkbox"]:checked ~ aside {
   display: block;
   transform: translateX(0);
   transition: transform ease 0.1s;
-}
-
-@media screen and (min-width: 500px) {
-  nav.navbar div.navbar__menu aside {
-    width: 350px;
-  }
 }

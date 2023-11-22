@@ -3,8 +3,15 @@ import { publicRoutes } from "src/models";
 import { useFormik } from "formik";
 import { ForgotValidatorForm } from "src/validators";
 import styles from "../auth.module.css";
+import { useContext } from "react";
+import { SettingsContext } from "src/context/settings";
 
 const Forgot = () => {
+  const settingsContext = useContext(SettingsContext);
+  const {
+    settingsState: { translated_text },
+  } = settingsContext;
+
   const formik = useFormik({
     initialValues: ForgotValidatorForm.initialState,
     validationSchema: ForgotValidatorForm.validatorSchemaForgot,
@@ -19,10 +26,7 @@ const Forgot = () => {
       <section className={styles.authentication__wrapper}>
         <h3>MAPI</h3>
         <form onSubmit={formik.handleSubmit} autoComplete="off">
-          <p>
-            Ingrese la dirección de correo electrónico asociada con su cuenta y
-            le enviaremos un enlace de recuperación
-          </p>
+          <p>{translated_text.text_forgot}</p>
           <div
             className={`${styles.authentication__input} ${
               formik.touched.new_password && formik.errors.new_password
@@ -30,12 +34,12 @@ const Forgot = () => {
                 : ""
             }`}
           >
-            <label htmlFor="new_password">Nueva contraseña</label>
+            <label htmlFor="new_password">{translated_text.new_password}</label>
             <input
               type="password"
               id="new_password"
               name="new_password"
-              placeholder="Escribe tu nueva contraseña"
+              placeholder={translated_text.write_new_password}
               onBlur={formik.handleBlur}
               value={formik.values.new_password}
               onChange={formik.handleChange}
@@ -56,12 +60,14 @@ const Forgot = () => {
                 : ""
             }`}
           >
-            <label htmlFor="confirm_password">Confirmar contraseña</label>
+            <label htmlFor="confirm_password">
+              {translated_text.confirm_password}
+            </label>
             <input
               type="password"
               id="confirm_password"
               name="confirm_password"
-              placeholder="Confirma tu nueva contraseña"
+              placeholder={translated_text.write_confirm_password}
               onBlur={formik.handleBlur}
               value={formik.values.confirm_password}
               onChange={formik.handleChange}
@@ -76,9 +82,9 @@ const Forgot = () => {
             )}
           </div>
           <button type="submit" disabled={!formik.dirty || !formik.isValid}>
-            Cambiar contraseña
+            {translated_text.change_password}
           </button>
-          <Link to={`/${publicRoutes.LOGIN}`}>Ir a iniciar sesión </Link>
+          <Link to={`/${publicRoutes.LOGIN}`}>{translated_text.go_login}</Link>
         </form>
       </section>
     </article>

@@ -8,6 +8,7 @@ import styles from "./private.module.css";
 
 const Dashboard = lazy(() => import("src/pages/Private/Dashboard/Dashboard"));
 const Home = lazy(() => import("src/pages/Private/Home/Home"));
+const Settings = lazy(() => import("src/pages/Private/Settings/Settings"));
 
 const Private = () => {
   return (
@@ -18,6 +19,7 @@ const Private = () => {
           <Route path="/" element={<Navigate to={privateRoutes.DASHBOARD} />} />
           <Route path={privateRoutes.DASHBOARD} element={<Dashboard />} />
           <Route path={privateRoutes.HOME} element={<Home />} />
+          <Route path={privateRoutes.SETTINGS} element={<Settings />} />
         </RoutesWithNotFound>
       </div>
     </>

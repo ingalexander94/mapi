@@ -7,6 +7,7 @@ import ScreenLoader from "./components/ScreenLoader/ScreenLoader";
 import { AuthProvider } from "./context/auth";
 import { UIProvider } from "./context/ui";
 import { privateRoutes, publicRoutes } from "./models";
+import { SettingsProvider } from "./context/settings/settings.provider";
 
 const Login = lazy(() => import("./pages/Auth/Login/Login"));
 const Recovery = lazy(() => import("./pages/Auth/Recovery/Recovery"));
@@ -18,27 +19,32 @@ function App() {
     <div>
       <Suspense fallback={<Loading />}>
         <UIProvider>
-          <AuthProvider>
-            <BrowserRouter>
-              <ScreenLoader>
-                <RoutesWithNotFound>
-                  <Route
-                    path="/"
-                    element={<Navigate to={privateRoutes.PRIVATE} />}
-                  />
-                  <Route path={publicRoutes.LOGIN} element={<Login />} />
-                  <Route path={publicRoutes.RECOVERY} element={<Recovery />} />
-                  <Route path={publicRoutes.FORGOT} element={<Forgot />} />
-                  <Route element={<AuthGuard privateValidation={true} />}>
+          <SettingsProvider>
+            <AuthProvider>
+              <BrowserRouter>
+                <ScreenLoader>
+                  <RoutesWithNotFound>
                     <Route
-                      path={`${privateRoutes.PRIVATE}/*`}
-                      element={<Private />}
+                      path="/"
+                      element={<Navigate to={privateRoutes.PRIVATE} />}
                     />
-                  </Route>
-                </RoutesWithNotFound>
-              </ScreenLoader>
-            </BrowserRouter>
-          </AuthProvider>
+                    <Route path={publicRoutes.LOGIN} element={<Login />} />
+                    <Route
+                      path={publicRoutes.RECOVERY}
+                      element={<Recovery />}
+                    />
+                    <Route path={publicRoutes.FORGOT} element={<Forgot />} />
+                    <Route element={<AuthGuard privateValidation={true} />}>
+                      <Route
+                        path={`${privateRoutes.PRIVATE}/*`}
+                        element={<Private />}
+                      />
+                    </Route>
+                  </RoutesWithNotFound>
+                </ScreenLoader>
+              </BrowserRouter>
+            </AuthProvider>
+          </SettingsProvider>
         </UIProvider>
       </Suspense>
     </div>
