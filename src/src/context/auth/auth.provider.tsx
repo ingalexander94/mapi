@@ -4,11 +4,7 @@ import { authReducer } from "./auth.reducer";
 import { AuthContext } from "./auth.context";
 
 const INITIAL_STATE: AuthState = {
-  user: {
-    fullname: "Alexander",
-    email: "alex@gmail.com",
-    password: "123456",
-  },
+  user: null,
 };
 
 interface Props {

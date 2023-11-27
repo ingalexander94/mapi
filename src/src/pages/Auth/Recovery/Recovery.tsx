@@ -5,9 +5,13 @@ import { RecoveryValidatorForm } from "src/validators";
 import styles from "../auth.module.css";
 import { useContext } from "react";
 import { SettingsContext } from "src/context/settings";
+import { useFetch } from "src/hooks";
+import AuthService from "src/services/auth.service";
+import Alerts from "src/lib/Alerts";
 
 const Recovery = () => {
   const settingsContext = useContext(SettingsContext);
+  const { loading, callEndpoint } = useFetch();
   const {
     settingsState: { translated_text },
   } = settingsContext;
@@ -16,8 +20,18 @@ const Recovery = () => {
     initialValues: RecoveryValidatorForm.initialState,
     validationSchema: RecoveryValidatorForm.validatorSchemaRecovery,
     validateOnMount: false,
-    onSubmit: async ({ email }) => {
-      console.log(email);
+    onSubmit: async ({ user_email }) => {
+      try {
+        const res = await callEndpoint(AuthService.forgot(user_email));
+        if (res.data.ok) {
+          await Alerts.showPopup(
+            "Enlace de recuperación enviada",
+            `Revisa la bandeja de entrada del correo ${user_email} para recuperar la contraseña.`
+          );
+        }
+      } catch (error: any) {
+        await Alerts.showToast("error", error.response.data.error);
+      }
     },
   });
 
@@ -29,25 +43,25 @@ const Recovery = () => {
           <p>{translated_text.text_recovery}</p>
           <div
             className={`${styles.authentication__input} ${
-              formik.touched.email && formik.errors.email
+              formik.touched.user_email && formik.errors.user_email
                 ? styles.authentication__input_error
                 : ""
             }`}
           >
-            <label htmlFor="email">{translated_text.email}</label>
+            <label htmlFor="user_email">{translated_text.user_email}</label>
             <input
               type="email"
-              id="email"
-              name="email"
+              id="user_email"
+              name="user_email"
               placeholder={translated_text.write_email}
               onBlur={formik.handleBlur}
-              value={formik.values.email}
+              value={formik.values.user_email}
               onChange={formik.handleChange}
               autoFocus
             />
-            {formik.touched.email && formik.errors.email ? (
+            {formik.touched.user_email && formik.errors.user_email ? (
               <span className="animate__animated animate__headShake">
-                * {formik.errors.email}
+                * {formik.errors.user_email}
               </span>
             ) : (
               <span></span>

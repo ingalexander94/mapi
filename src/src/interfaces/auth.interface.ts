@@ -7,3 +7,8 @@ export interface UserAuth {
 export interface AuthState {
   user: UserAuth | null;
 }
+
+export interface ForgotResponse {
+  ok: boolean;
+  error?: string;
+}
