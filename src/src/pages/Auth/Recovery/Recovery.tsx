@@ -2,12 +2,12 @@ import { Link } from "react-router-dom";
 import { publicRoutes } from "src/models";
 import { useFormik } from "formik";
 import { RecoveryValidatorForm } from "src/validators";
-import styles from "../auth.module.css";
 import { useContext } from "react";
 import { SettingsContext } from "src/context/settings";
 import { useFetch } from "src/hooks";
 import AuthService from "src/services/auth.service";
 import Alerts from "src/lib/Alerts";
+import styles from "../auth.module.css";
 
 const Recovery = () => {
   const settingsContext = useContext(SettingsContext);
@@ -22,12 +22,15 @@ const Recovery = () => {
     validateOnMount: false,
     onSubmit: async ({ user_email }) => {
       try {
-        const res = await callEndpoint(AuthService.forgot(user_email));
-        if (res.data.ok) {
-          await Alerts.showPopup(
-            "Enlace de recuperación enviada",
-            `Revisa la bandeja de entrada del correo ${user_email} para recuperar la contraseña.`
-          );
+        if (formik.isValid && !loading) {
+          const res = await callEndpoint(AuthService.forgot(user_email));
+          if (res.data.ok) {
+            await Alerts.showPopup(
+              "Enlace de recuperación enviada",
+              `Revisa la bandeja de entrada del correo ${user_email} para recuperar la contraseña.`
+            );
+            formik.resetForm();
+          }
         }
       } catch (error: any) {
         await Alerts.showToast("error", error.response.data.error);
@@ -67,8 +70,15 @@ const Recovery = () => {
               <span></span>
             )}
           </div>
-          <button type="submit" disabled={!formik.dirty || !formik.isValid}>
-            {translated_text.recovery_password}
+          <button
+            type="submit"
+            disabled={!formik.dirty || !formik.isValid || loading}
+          >
+            {loading ? (
+              <i className="fas fa-spinner fa-pulse"></i>
+            ) : (
+              translated_text.recovery_password
+            )}
           </button>
           <Link to={`/${publicRoutes.LOGIN}`}>{translated_text.back}</Link>
         </form>

@@ -1,10 +1,10 @@
+import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { publicRoutes } from "src/models";
 import { useFormik } from "formik";
 import { ForgotValidatorForm } from "src/validators";
-import styles from "../auth.module.css";
-import { useContext } from "react";
 import { SettingsContext } from "src/context/settings";
+import styles from "../auth.module.css";
 
 const Forgot = () => {
   const settingsContext = useContext(SettingsContext);

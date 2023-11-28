@@ -4,17 +4,19 @@ import { useFormik } from "formik";
 import { privateRoutes, publicRoutes } from "src/models";
 import { LoginValidatorForm } from "src/validators";
 import { AuthContext } from "src/context/auth";
-import { UIContext } from "src/context/ui";
-import styles from "../auth.module.css";
 import { SettingsContext } from "src/context/settings";
+import AuthService from "src/services/auth.service";
+import Alerts from "src/lib/Alerts";
+import { useFetch } from "src/hooks";
+import { CustomStorage } from "src/lib";
+import styles from "../auth.module.css";
 
 const Login = () => {
   const navigate = useNavigate();
   const authContext = useContext(AuthContext);
   const { setUserAuth } = authContext;
-  const uiContext = useContext(UIContext);
-  const { toggleCheking, uiState } = uiContext;
   const settingsContext = useContext(SettingsContext);
+  const { loading, callEndpoint } = useFetch();
   const {
     settingsState: { translated_text },
   } = settingsContext;
@@ -23,15 +25,21 @@ const Login = () => {
     initialValues: LoginValidatorForm.initialState,
     validationSchema: LoginValidatorForm.validatorSchemaLogin,
     validateOnMount: false,
-    onSubmit: ({ email, password }) => {
-      if (formik.isValid && !uiState.checking) {
-        toggleCheking();
-        console.table({ email, password });
-        setTimeout(() => {
-          setUserAuth({ email, password, fullname: "Alexander" });
-          toggleCheking();
-          navigate(`/${privateRoutes.PRIVATE}`, { replace: true });
-        }, 2000);
+    onSubmit: async ({ user_email, user_password }) => {
+      try {
+        if (formik.isValid && !loading) {
+          const res = await callEndpoint(
+            AuthService.login(user_email, user_password)
+          );
+          if (res.data.ok) {
+            CustomStorage.token = res.data.data.token;
+            setUserAuth(res.data.data.user);
+            formik.resetForm();
+            navigate(`/${privateRoutes.PRIVATE}`, { replace: true });
+          }
+        }
+      } catch (error: any) {
+        await Alerts.showToast("error", error.response.data.error);
       }
     },
   });
@@ -43,26 +51,26 @@ const Login = () => {
         <form onSubmit={formik.handleSubmit} autoComplete="off">
           <div
             className={`${styles.authentication__input} ${
-              formik.touched.email && formik.errors.email
+              formik.touched.user_email && formik.errors.user_email
                 ? styles.authentication__input_error
                 : ""
             }`}
           >
-            <label htmlFor="email">{translated_text.email}</label>
+            <label htmlFor="user_email">{translated_text.email}</label>
             <input
               type="email"
-              id="email"
-              name="email"
+              id="user_email"
+              name="user_email"
               placeholder={translated_text.write_email}
               onBlur={formik.handleBlur}
-              value={formik.values.email}
+              value={formik.values.user_email}
               onChange={formik.handleChange}
               autoFocus
             />
 
-            {formik.touched.email && formik.errors.email ? (
+            {formik.touched.user_email && formik.errors.user_email ? (
               <span className="animate__animated animate__headShake">
-                * {formik.errors.email}
+                * {formik.errors.user_email}
               </span>
             ) : (
               <span></span>
@@ -70,31 +78,38 @@ const Login = () => {
           </div>
           <div
             className={`${styles.authentication__input} ${
-              formik.touched.password && formik.errors.password
+              formik.touched.user_password && formik.errors.user_password
                 ? styles.authentication__input_error
                 : ""
             }`}
           >
-            <label htmlFor="password">{translated_text.password}</label>
+            <label htmlFor="user_password">{translated_text.password}</label>
             <input
               type="password"
-              id="password"
-              name="password"
+              id="user_password"
+              name="user_password"
               placeholder={translated_text.write_password}
               onBlur={formik.handleBlur}
-              value={formik.values.password}
+              value={formik.values.user_password}
               onChange={formik.handleChange}
             />
-            {formik.touched.password && formik.errors.password ? (
+            {formik.touched.user_password && formik.errors.user_password ? (
               <span className="animate__animated animate__headShake">
-                * {formik.errors.password}
+                * {formik.errors.user_password}
               </span>
             ) : (
               <span></span>
             )}
           </div>
-          <button type="submit" disabled={!formik.dirty || !formik.isValid}>
-            {translated_text.login}
+          <button
+            type="submit"
+            disabled={!formik.dirty || !formik.isValid || loading}
+          >
+            {loading ? (
+              <i className="fas fa-spinner fa-pulse"></i>
+            ) : (
+              translated_text.login
+            )}
           </button>
           <Link to={`/${publicRoutes.RECOVERY}`}>
             {translated_text.recovery_password}

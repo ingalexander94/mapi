@@ -5,6 +5,7 @@ import { UIContext } from "src/context/ui";
 import { publicRoutes } from "src/models";
 import styles from "./navbar.module.css";
 import { Sidebar } from "../Sidebar";
+import { CustomStorage } from "src/lib";
 
 const Navbar = () => {
   const authContext = useContext(AuthContext);
@@ -15,11 +16,10 @@ const Navbar = () => {
 
   const handleLogout = () => {
     toggleCheking();
-    setTimeout(() => {
-      setUserAuth(null);
-      toggleCheking();
-      navigate(`/${publicRoutes.LOGIN}`, { replace: true });
-    }, 2000);
+    setUserAuth(null);
+    CustomStorage.removeToken();
+    toggleCheking();
+    navigate(`/${publicRoutes.LOGIN}`, { replace: true });
   };
 
   return (
@@ -33,7 +33,7 @@ const Navbar = () => {
         <h4>MAPI</h4>
       </div>
       <ul className={styles.navbar__items}>
-        <li>{authState.user?.fullname}</li>
+        <li>{authState.user?.roles[0].role_name}</li>
         <li>
           <button
             title="Cerrar sesión"
